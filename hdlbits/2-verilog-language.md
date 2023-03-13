@@ -18,6 +18,17 @@
   - [Vector Reversal 1](#vectorr)
   - [Replication Operator](#vector4)
   - [More Replication](#vector5)
+- [Modules: Hierarchy](#modules-hierarchy)
+  - [Modules](#module)
+  - [Connecting Ports by Position](#module_pos)
+  - [Connecting Ports by Name](#module_name)
+  - [Three Modules](#module_shift)
+  - [Modules and Vectors](#module_shift8)
+  - [Adder 1](#module_add)
+  - [Adder 2](#module_fadd)
+  - [Carry-Select Adder](#module_cseladd)
+  - [Adder-Subtractor](#module_addsub)
+  - [](#)
 
 # Worked Examples 
 
@@ -296,6 +307,227 @@ module top_module (
     
 endmodule
 ```
+## Modules: Hierarchy
+
+### Module
+https://hdlbits.01xz.net/wiki/Module
+
+```systemverilog
+module top_module ( input a, input b, output out );
+    
+    /* Writing it by name means that even if positions are changed, the module 
+    call will still be correct */
+    mod_a instance2(.in1(a), .in2(b), .out(out));
+
+endmodule
+```
+
+### Module_pos
+https://hdlbits.01xz.net/wiki/Module_pos
+
+```systemverilog
+module top_module ( 
+    input a, 
+    input b, 
+    input c,
+    input d,
+    output out1,
+    output out2
+);
+    
+    mod_a instance1(
+        out1, 
+        out2, 
+        a, 
+        b, 
+        c, 
+        d
+    );
+
+endmodule
+```
+
+### Module_name
+https://hdlbits.01xz.net/wiki/Module_name
+
+```systemverilog
+module top_module ( 
+    input a, 
+    input b, 
+    input c,
+    input d,
+    output out1,
+    output out2
+);
+    mod_a instance_1(
+        .out1(out1),
+        .out2(out2),
+        .in1(a),
+        .in2(b),
+        .in3(c),
+        .in4(d)
+    );
+
+endmodule
+```
+
+### Module_shift
+https://hdlbits.01xz.net/wiki/Module_shift
+
+```systemverilog
+module top_module ( input clk, input d, output q );
+    
+    wire dff12, dff23;
+    
+    my_dff dff1(
+        .clk(clk), 
+        .d(d), 
+        .q(dff12)
+    	);
+    
+    my_dff dff2(
+        .clk(clk), 
+        .d(dff12), 
+        .q(dff23)
+    );
+    
+    my_dff dff3(
+        .clk(clk),
+        .d(dff23),
+        .q(q)
+    );
+
+endmodule
+```
+
+### Module_shift8
+https://hdlbits.01xz.net/wiki/Module_shift8
+
+```systemverilog
+module top_module ( 
+    input clk, 
+    input [7:0] d, 
+    input [1:0] sel, 
+    output [7:0] q 
+);
+    
+    wire [7:0] dff1_out, dff2_out, dff3_out;
+    
+    my_dff8 dff8_1(clk, d, dff1_out);
+    my_dff8 dff8_2(clk, dff1_out, dff2_out);
+    my_dff8 dff8_3(clk, dff2_out, dff3_out);
+    
+    /* 4-to-1 MUX in combinational always block. */
+    always @(*) begin
+        case (sel)
+            2'b00	: q = d;
+            2'b01	: q = dff1_out;
+            2'b10	: q = dff2_out;
+            default	: q = dff3_out;
+        endcase
+    end
+    
+endmodule
+```
+
+### Module_add
+https://hdlbits.01xz.net/wiki/Module_add
+
+```systemverilog
+module top_module(
+    input [31:0] a,
+    input [31:0] b,
+    output [31:0] sum
+);
+    wire c;
+    
+    /* Good idea to screenshot and work backwards for this one. */
+    add16 add16_1(a[15:0], b[15:0], 1'b0, sum[15:0], c);
+    add16 add16_2(a[31:16], b[31:16], c, sum[31:16], 1'b0);
+
+endmodule
+```
+
+### Module_fadd
+https://hdlbits.01xz.net/wiki/Module_fadd
+
+```systemverilog
+module top_module (
+    input [31:0] a,
+    input [31:0] b,
+    output [31:0] sum
+);//
+    wire c, cX;
+    
+    add16 add16_1(a[15:0], b[15:0], 1'b0, sum[15:0], c);
+    add16 add16_2(a[31:16], b[31:16], c, sum[31:16], cX);
+
+endmodule
+
+module add1 ( input a, input b, input cin,   output sum, output cout );
+
+// Full adder module here
+    assign sum = a ^ b ^ cin;
+    assign cout = a&b | a&cin | b&cin;
+    
+endmodule
+```
+
+### Module_cseladd
+https://hdlbits.01xz.net/wiki/Module_cseladd
+
+```systemverilog
+module top_module(
+    input [31:0] a,
+    input [31:0] b,
+    output [31:0] sum
+);
+    wire cout_sel, cout2a, cout2b;
+    wire [15:0] outa, outb;
+    
+    add16 add16_1(a[15:0], b[15:0], 1'b0, sum[15:0], cout_sel);
+    add16 add16_2a(a[31:16], b[31:16], 1'b0, outa, cout2a);
+    add16 add16_2b(a[31:16], b[31:16], 1'b1, outb, cout2b);
+    
+    // MUX
+    always @ (cout_sel, outa, outb) begin
+        case (cout_sel)
+            1'b0	:	sum[31:16] = outa;
+            default	:	sum[31:16] = outb;
+        endcase
+    end
+
+endmodule
+```
+
+### Module_addsub
+https://hdlbits.01xz.net/wiki/Module_addsub
+
+```systemverilog
+module top_module(
+    input [31:0] a,
+    input [31:0] b,
+    input sub,
+    output [31:0] sum
+);
+    wire c12, cout_2;
+    wire [31:0] b_xor;
+    
+    add16 add16_1(a[15:0], b_xor[15:0], sub, sum[15:0], c12);
+    add16 add16_2(a[31:16], b_xor[31:16], c12, sum[31:16], cout_2);
+
+    always @ (b, sub, b_xor) begin
+        case (sub)
+            1'b0	:	b_xor = b;
+            default	:	b_xor = ~b;
+        endcase
+    end
+    
+endmodule
+```
+
+### 
+https://hdlbits.01xz.net/wiki/
 
 ```systemverilog
 

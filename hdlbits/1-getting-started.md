@@ -1,6 +1,10 @@
 # Getting Started
+- [Getting Started](#step_one)
+- [Output Zero](#zero)
+  
+# Worked Examples
 
-### Step One/Getting Started
+### Step_one
 https://hdlbits.01xz.net/wiki/Step_one
 
 ```systemverilog

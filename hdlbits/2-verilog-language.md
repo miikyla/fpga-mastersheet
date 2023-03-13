@@ -1,8 +1,8 @@
-### Verilog Language
+# Verilog Language
 
 ## Basics
 
-# Simple Wire
+### Simple Wire
 https://hdlbits.01xz.net/wiki/Wire
 
 ```systemverilog
@@ -13,7 +13,7 @@ module top_module( input in, output out );
 endmodule
 ```
 
-# Four Wires
+### Four Wires
 https://hdlbits.01xz.net/wiki/Wire4
 
 ```systemverilog
@@ -28,7 +28,7 @@ module top_module(
 endmodule
 ```
 
-# Inverter
+### Inverter
 https://hdlbits.01xz.net/wiki/Notgate
 
 ```systemverilog
@@ -39,7 +39,7 @@ module top_module( input in, output out );
 endmodule
 ```
 
-# AND Gate
+### AND Gate
 https://hdlbits.01xz.net/wiki/Andgate
 
 ```systemverilog
@@ -56,7 +56,7 @@ module top_module(
 endmodule
 ```
 
-# NOR Gate
+### NOR Gate
 https://hdlbits.01xz.net/wiki/Norgate
 
 ```systemverilog
@@ -72,7 +72,7 @@ module top_module(
 endmodule
 ```
 
-# XNOR Gate
+### XNOR Gate
 https://hdlbits.01xz.net/wiki/Xnorgate
 
 ```systemverilog
@@ -86,7 +86,7 @@ module top_module(
 endmodule
 ```
 
-# Declaring Wires
+### Declaring Wires
 https://hdlbits.01xz.net/wiki/Wire_decl
 
 ```systemverilog
@@ -109,7 +109,7 @@ module top_module(
 endmodule
 ```
 
-# 7458 Chip
+### 7458 Chip
 https://hdlbits.01xz.net/wiki/7458
 
 ```systemverilog

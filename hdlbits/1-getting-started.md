@@ -1,6 +1,6 @@
-### Getting Started
+# Getting Started
 
-# Step One/Getting Started
+### Step One/Getting Started
 https://hdlbits.01xz.net/wiki/Step_one
 
 ```systemverilog
@@ -12,7 +12,7 @@ module top_module( output one );
 endmodule
 ```
 
-# Zero
+### Zero
 https://hdlbits.01xz.net/wiki/Zero
 
 ```systemverilog

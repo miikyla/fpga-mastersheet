@@ -28,7 +28,24 @@
   - [Adder 2](#module_fadd)
   - [Carry-Select Adder](#module_cseladd)
   - [Adder-Subtractor](#module_addsub)
-  - [](#)
+- [Procedures](#procedures)
+  - [Always Blocks (Combinational)](#alwaysblock1)
+  - [Always Blocks (Clocked)](#alwaysblock2)
+  - [If Statement](#always_if)
+  - [If Statement Latches](#always_if2)
+  - [Case Statement](#always_case)
+  - [Priority Encoder](#always_case2)
+  - [Priority Encoder with casez](#always_casez)
+  - [Avoiding Latches](#always_nolatches)
+- [More Verilog Features](#more-verilog-features)
+  - [Conditional Ternary Operator](#conditional)
+  - [Reduction Operators](#reduction)
+  - [Reduction: Even Wider Gates](#gates100)
+  - [Combinational For-Loop: Vector Reversal 2](#vector100r)
+  - [Combinational For-Loop: 255-bit Population Count](#popcount255)
+  - [Generate For-Loop: 100-bit Binary Adder 2](#adder100i)
+  - [Generate For-Loop: 100-digit BCD Adder](#bcdadd100)
+
 
 # Worked Examples 
 
@@ -525,10 +542,365 @@ module top_module(
     
 endmodule
 ```
+## Procedures
 
-### 
-https://hdlbits.01xz.net/wiki/
+### Alwaysblock1
+https://hdlbits.01xz.net/wiki/Alwaysblock1
 
 ```systemverilog
+module top_module(
+    input a, 
+    input b,
+    output wire out_assign,
+    output reg out_alwaysblock
+);
+    assign out_assign = a & b;
+    
+    always @ (*)
+        out_alwaysblock = a & b;
 
+endmodule
+```
+
+### Alwaysblock2
+https://hdlbits.01xz.net/wiki/Alwaysblock2
+
+```systemverilog
+module top_module(
+    input clk,
+    input a,
+    input b,
+    output wire out_assign,
+    output reg out_always_comb,
+    output reg out_always_ff   );
+    
+    assign out_assign = a ^ b;
+    
+    /* Blocking assignment for combinational always block. */
+    always @(*)
+        out_always_comb = a ^ b;
+    
+    /* Npn-blocking assignment for clocked always block. */
+    always @(posedge clk)
+        out_always_ff <= a ^ b;
+
+endmodule
+```
+
+### Always_if
+https://hdlbits.01xz.net/wiki/Always_if
+
+```systemverilog
+module top_module(
+    input a,
+    input b,
+    input sel_b1,
+    input sel_b2,
+    output wire out_assign,
+    output reg out_always   ); 
+    
+    assign out_assign = (sel_b1 & sel_b2) ? b : a;
+    
+    always @ (*) begin
+        if (sel_b1 & sel_b2)
+            out_always = b;
+        else
+            out_always = a;
+    end   
+
+endmodule
+```
+
+### Always_if2
+https://hdlbits.01xz.net/wiki/Always_if2
+
+```systemverilog
+module top_module (
+    input      cpu_overheated,
+    output reg shut_off_computer,
+    input      arrived,
+    input      gas_tank_empty,
+    output reg keep_driving  );
+
+    /* Computer turns off ONLY if the CPU has overheated. */
+    always @(*) begin
+        if (cpu_overheated)
+           shut_off_computer = 1;
+        else
+            shut_off_computer = 0;
+    end
+
+    /* Stop driving IF arrived OR IF empty fuel tank. */
+    always @(*) begin
+        if (arrived | gas_tank_empty)
+           keep_driving = 0;
+        else 
+            keep_driving = 1;
+    end
+
+endmodule
+```
+
+### Always_case
+https://hdlbits.01xz.net/wiki/Always_case
+
+```systemverilog
+// synthesis verilog_input_version verilog_2001
+module top_module ( 
+    input [2:0] sel, 
+    input [3:0] data0,
+    input [3:0] data1,
+    input [3:0] data2,
+    input [3:0] data3,
+    input [3:0] data4,
+    input [3:0] data5,
+    output reg [3:0] out   );//
+
+    always@(*) begin  // This is a combinational circuit
+        case(sel)
+            3'd0	:	out = data0;
+            3'd1	:	out = data1;
+            3'd2	:	out	= data2;
+            3'd3	:	out = data3;
+            3'd4	: 	out = data4;
+            3'd5	: 	out = data5;
+            default	:	out = 4'h0;
+        endcase
+    end
+
+endmodule
+```
+
+### Always_case2
+https://hdlbits.01xz.net/wiki/Always_case2
+
+```systemverilog
+module top_module (
+    input [3:0] in,
+    output reg [1:0] pos  );
+    
+    /* casez can be used to define bits we don't care about. Order of case 
+       options doesn't matter if zeros are specified after the priority bit. */
+    always @ (*) begin
+        casez (in)
+            4'bzzz1	:	pos = 2'd0;
+            4'bzz10	:	pos = 2'd1;
+            4'bz100	:	pos = 2'd2;
+            4'b1000	:	pos = 2'd3;
+            default	:	pos = 2'd0;
+        endcase
+    end
+
+endmodule
+```
+
+### Always_casez
+https://hdlbits.01xz.net/wiki/Always_casez
+
+```systemverilog
+module top_module (
+    input [7:0] in,
+    output reg [2:0] pos );
+    
+    always @ (*) begin
+        casez (in)
+            8'bzzzzzzz1	:	pos = 3'd0;
+            8'bzzzzzz10	:	pos = 3'd1;
+            8'bzzzzz100	:	pos = 3'd2;
+            8'bzzzz1000	:	pos = 3'd3;
+            8'bzzz10000	:	pos = 3'd4;
+            8'bzz100000	:	pos = 3'd5;
+            8'bz1000000	:	pos = 3'd6;
+            8'b10000000	:	pos = 3'd7;
+            default		:	pos = 3'd0;
+        endcase
+    end
+endmodule
+```
+
+### Always_nolatches
+https://hdlbits.01xz.net/wiki/Always_nolatches
+
+```systemverilog
+module top_module (
+    input [15:0] scancode,
+    output reg left,
+    output reg down,
+    output reg right,
+    output reg up  ); 
+    
+    always @ (*) begin
+        /* Need to specify "default" values so that a latch isn't generated if 
+           the scancode isn't defined in the case options below. */
+        up = 1'b0;
+    	down = 1'b0;
+    	left = 1'b0;
+    	right = 1'b0;
+    	
+        case (scancode)
+            16'he06b	:	left 	= 1'b1;
+            16'he072	:	down 	= 1'b1;
+            16'he074	:	right 	= 1'b1;
+            16'he075	:	up		= 1'b1;
+        endcase
+    end
+endmodule
+```
+
+## More Verilog Features
+
+### Conditional
+https://hdlbits.01xz.net/wiki/Conditional
+
+```systemverilog
+module top_module (
+    input [7:0] a, b, c, d,
+    output [7:0] min);//
+
+    wire [7:0] ir1, ir2;
+    // assign intermediate_result1 = compare? true: false;
+    assign ir1 = (a < b) 	? a : b;
+    assign ir2 = (ir1 < c) 	? ir1 : c;
+    assign min = (ir2 < d) 	? ir2 : d;
+    
+
+endmodule
+```
+
+### Reduction
+https://hdlbits.01xz.net/wiki/Reduction
+
+```systemverilog
+module top_module (
+    input [7:0] in,
+    output parity); 
+
+    assign parity = ^in;
+    
+endmodule
+```
+
+### Gates100
+https://hdlbits.01xz.net/wiki/Gates100
+
+```systemverilog
+module top_module( 
+    input [99:0] in,
+    output out_and,
+    output out_or,
+    output out_xor 
+);
+    assign out_and 	= &in;
+    assign out_or	= |in;
+    assign out_xor	= ^in;
+
+endmodule
+```
+
+### Vector100r
+https://hdlbits.01xz.net/wiki/Vector100r
+
+```systemverilog
+module top_module( 
+    input [99:0] in,
+    output [99:0] out
+);    
+    always @ (*) begin
+        for (integer i = 0; i < $bits(out); i++)
+            /* Figure out the desired output value for at least 3 input values:
+               out[0] = in[99], out[1] = in[98], out[2] = in[97], ... 
+               Use this to find an equation that satisfies the pattern with the
+               provided variables. */
+            out[i] = in[$bits(out) - 1 - i];
+    end
+        
+endmodule
+```
+
+### Popcount255
+https://hdlbits.01xz.net/wiki/Popcount255
+
+```systemverilog
+module top_module( 
+    input [254:0] in,
+    output [7:0] out );
+    
+    always @ (*) begin
+        out = 8'h0;
+        for(integer i = 0; i < $bits(in); i++)
+            /* Since we're working in binary, summing all values in the vector 
+               will effectively count all the 1's. */
+            out += in[i];
+    end
+    
+endmodule
+
+```
+
+### Adder100i
+https://hdlbits.01xz.net/wiki/Adder100i
+
+```systemverilog
+module full_adder( 
+    input a, b, cin,
+    output cout, sum );
+    
+    assign sum = a ^ b ^ cin;
+    assign cout = a&b | a&cin | cin&b;
+
+endmodule
+
+module top_module( 
+    input [99:0] a, b,
+    input cin,
+    output [99:0] cout,
+    output [99:0] sum );
+    
+    genvar i;
+    
+    generate
+        /* First full_adder has a different variable pattern, will need to 
+           explicitly define it outside of the for-loop. */
+        full_adder first_fa(a[0], b[0], cin, cout[0], sum[0]);
+
+        for(i = 1; i < $bits(a); i++) begin: gen_full_adder
+            full_adder u0(a[i], b[i], cout[i-1], cout[i], sum[i]);
+        end
+    endgenerate
+
+endmodule
+```
+
+### Bcdadd100
+https://hdlbits.01xz.net/wiki/Bcdadd100
+
+```systemverilog
+module top_module( 
+    input [399:0] a, b,
+    input cin,
+    output cout,
+    output [399:0] sum );
+    
+    genvar i;
+    wire [98:0] cinout;
+    
+    generate
+        /* First and last instance of the full-adder break the pattern, define 
+           them explicitly. */
+        bcd_fadd bcd_fadd_init(a[3:0], b[3:0], cin, cinout[0], sum[3:0]);
+        bcd_fadd bcd_fadd_end(a[399:396], b[399:396], cinout[98], cout, 
+                              sum[399:396]);
+        
+        /* bcd_fadd u0(a[07:04], b[07:04], cinout[0], cinout[1], sum[07:04]),
+           bcd_fadd u1(a[11:08], b[11:08], cinout[1], cinout[2], sum[11:08]),
+           bcd_fadd u2(a[15:12], b[15:12], cinout[2], cinout[3], sum[15:12]),
+           ... */
+        for(i = 1; i < 99; i ++) begin : bcd_forloop
+            bcd_fadd u0(a[(3 + 4*i):(4*i)], b[(3 + 4*i):(4*i)], cinout[i-1], 
+                        cinout[i], sum[(3 + 4*i):(4*i)]);
+        end
+
+    endgenerate
+
+endmodule
 ```

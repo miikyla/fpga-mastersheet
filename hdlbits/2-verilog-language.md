@@ -1,8 +1,29 @@
 # Verilog Language
+- [Basics](#basics)
+  - [Simple Wire](#wire)
+  - [Four Wires](#wire4)
+  - [Inverter](#notgate)
+  - [AND Gate](#andgate)
+  - [NOR Gate](#norgate)
+  - [XNOR Gate](#xnorgate)
+  - [Declaring Wires](#wire_decl)
+  - [7458 Chip](#7458)
+- [Vectors](#vectors)
+  - [Vectors](#vector0)
+  - [Vectors in More Detail](#vector1)
+  - [Vector Part Select](#vector2)
+  - [Bitwise Operators](#vectorgates)
+  - [Four-Input Gates](#gates4)
+  - [Vector Concatenation Operator](#vector3)
+  - [Vector Reversal 1](#vectorr)
+  - [Replication Operator](#vector4)
+  - [More Replication](#vector5)
+
+# Worked Examples 
 
 ## Basics
 
-### Simple Wire
+### Wire
 https://hdlbits.01xz.net/wiki/Wire
 
 ```systemverilog
@@ -13,7 +34,7 @@ module top_module( input in, output out );
 endmodule
 ```
 
-### Four Wires
+### Wire4
 https://hdlbits.01xz.net/wiki/Wire4
 
 ```systemverilog
@@ -28,7 +49,7 @@ module top_module(
 endmodule
 ```
 
-### Inverter
+### Notgate
 https://hdlbits.01xz.net/wiki/Notgate
 
 ```systemverilog
@@ -39,7 +60,7 @@ module top_module( input in, output out );
 endmodule
 ```
 
-### AND Gate
+### Andgate
 https://hdlbits.01xz.net/wiki/Andgate
 
 ```systemverilog
@@ -56,7 +77,7 @@ module top_module(
 endmodule
 ```
 
-### NOR Gate
+### Norgate
 https://hdlbits.01xz.net/wiki/Norgate
 
 ```systemverilog
@@ -72,7 +93,7 @@ module top_module(
 endmodule
 ```
 
-### XNOR Gate
+### Xnorgate
 https://hdlbits.01xz.net/wiki/Xnorgate
 
 ```systemverilog
@@ -86,7 +107,7 @@ module top_module(
 endmodule
 ```
 
-### Declaring Wires
+### Wire_decl
 https://hdlbits.01xz.net/wiki/Wire_decl
 
 ```systemverilog
@@ -109,7 +130,7 @@ module top_module(
 endmodule
 ```
 
-### 7458 Chip
+### 7458
 https://hdlbits.01xz.net/wiki/7458
 
 ```systemverilog
@@ -131,7 +152,7 @@ endmodule
 
 ## Vectors
 
-### Vectors
+### Vector0
 https://hdlbits.01xz.net/wiki/Vector0
 
 ```systemverilog
@@ -148,7 +169,7 @@ module top_module (
 endmodule
 ```
 
-### Vectors in More Detail
+### Vector1
 https://hdlbits.01xz.net/wiki/Vector1
 
 ```systemverilog
@@ -162,7 +183,7 @@ module top_module(
 endmodule
 ```
 
-### Vector Part Select
+### Vector2
 https://hdlbits.01xz.net/wiki/Vector2
 
 ```systemverilog
@@ -177,7 +198,7 @@ module top_module(
 endmodule
 ```
 
-### Bitwise Operators
+### Vectorgates
 https://hdlbits.01xz.net/wiki/Vectorgates
 
 ```systemverilog
@@ -195,7 +216,8 @@ module top_module(
 
 endmodule
 ```
-### Four-Input Gates
+
+### Gates4
 https://hdlbits.01xz.net/wiki/Gates4
 
 ```systemverilog
@@ -212,7 +234,7 @@ module top_module(
 endmodule
 ```
 
-### Vector Concatenation Operator
+### Vector3
 https://hdlbits.01xz.net/wiki/Vector3
 
 ```systemverilog
@@ -226,7 +248,7 @@ module top_module (
 endmodule
 ```
 
-### Vector Reversal 1
+### Vectorr
 https://hdlbits.01xz.net/wiki/Vectorr
 
 ```systemverilog
@@ -245,7 +267,7 @@ module top_module(
 endmodule
 ```
 
-### Replication Operator
+### Vector4
 https://hdlbits.01xz.net/wiki/Vector4
 
 ```systemverilog
@@ -259,7 +281,7 @@ module top_module (
 endmodule
 ```
 
-### More Replication
+### Vector5
 https://hdlbits.01xz.net/wiki/Vector5
 
 ```systemverilog
